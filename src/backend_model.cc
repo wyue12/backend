@@ -153,19 +153,8 @@ BackendModel::BackendModel(
 TRITONSERVER_Error*
 BackendModel::SupportsFirstDimBatching(bool* supports)
 {
-  // We can't determine this during model initialization because
-  // TRITONSERVER_ServerModelBatchProperties can't be called until the
-  // model is loaded. So we just cache it here.
-  if (!supports_batching_initialized_) {
-    uint32_t flags = 0;
-    RETURN_IF_ERROR(TRITONSERVER_ServerModelBatchProperties(
-        triton_server_, name_.c_str(), version_, &flags, nullptr /* voidp */));
-    supports_batching_ = ((flags & TRITONSERVER_BATCH_FIRST_DIM) != 0);
-    supports_batching_initialized_ = true;
-  }
-
-  *supports = supports_batching_;
-  return nullptr;  // success
+  *supports = max_batch_size_ > 0;
+  return nullptr;
 }
 
 const BatchOutput*
