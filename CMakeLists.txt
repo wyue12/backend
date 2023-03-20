@@ -184,6 +184,9 @@ target_link_libraries(
 )
 
 if(${TRITON_ENABLE_GPU})
+  target_link_options(triton-backend-utils
+    PUBLIC
+    $<$<CXX_COMPILER_ID:MSVC>:/FORCE:MULTIPLE>)
   target_link_libraries(
     triton-backend-utils
     PUBLIC
